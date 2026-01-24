@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Monitor Materie Esame</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    #anno { font-weight: bold; font-size: 1.2em; }
+    .nuovo { color: red; }
+    #log { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Monitor Materie Esame</h1>
+  <p id="anno">Anno scolastico: ...</p>
+
+  <h2>Cronologia degli anni rilevati:</h2>
+  <ul id="log"></ul>
+
+  <script>
+    const ANNO_ELEMENT = document.getElementById('anno');
+    const LOG_ELEMENT = document.getElementById('log');
+
+    let ultimaData = '';
+
+    async function controllaAnno() {
+      try {
+        const response = await fetch('/api/brand');
+        const html = await response.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const brandText = doc.querySelector('#brand')?.textContent || '';
+
+        const match = brandText.match(/a\.s\.\s*(\d{4}\/\d{2})/);
+        if (!match) return;
+
+        const annoScolastico = match[1];
+
+        if (!ultimaData) {
+          ANNO_ELEMENT.textContent = 'Anno scolastico: ' + annoScolastico;
+        } else if (ultimaData !== annoScolastico) {
+          ANNO_ELEMENT.textContent = 'Anno scolastico: ' + annoScolastico + ' ⚡ NUOVO ANNO!';
+          ANNO_ELEMENT.classList.add('nuovo');
+
+          const li = document.createElement('li');
+          li.textContent = `${ultimaData} → ${annoScolastico}`;
+          LOG_ELEMENT.appendChild(li);
+        }
+
+        ultimaData = annoScolastico;
+      } catch (err) {
+        console.error('Errore fetch:', err);
+      }
+    }
+
+    // Controlla subito e poi ogni 30 minuti
+    controllaAnno();
+    setInterval(controllaAnno, 30 * 60 * 1000);
+  </script>
+</body>
+</html>
