@@ -5,339 +5,535 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monitor Materie Esame 2026</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      color: #333;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* Animated background particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: float 15s infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
     }
     
     .container {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      padding: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      animation: slideIn 0.6s ease-out;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     h1 {
       text-align: center;
-      color: #333;
-      margin: 0 0 30px 0;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 40px;
+      font-weight: 800;
+      letter-spacing: -1px;
     }
     
-    .status-section {
-      background: #f8f9fa;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 30px;
-      border-left: 4px solid #667eea;
+    .hero-countdown {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      color: white;
+      box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
     }
     
-    .status-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    
-    .status-row:last-child {
-      margin-bottom: 0;
-    }
-    
-    .status-label {
+    .hero-countdown h2 {
+      font-size: 1.2rem;
       font-weight: 600;
-      color: #555;
+      margin-bottom: 20px;
+      opacity: 0.9;
     }
     
-    .status-value {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .countdown-display {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 15px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .countdown-unit {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 20px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .countdown-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      display: block;
+      line-height: 1;
+    }
+    
+    .countdown-label {
+      font-size: 0.75rem;
+      opacity: 0.9;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .status-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .status-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .status-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .status-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     }
     
     .status-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    
-    .status-icon.active {
-      background-color: #28a745;
-    }
-    
-    .status-icon.pending {
-      background-color: #ffc107;
-    }
-    
-    .status-icon.inactive {
-      background-color: #6c757d;
-    }
-    
-    .countdown {
-      font-size: 18px;
-      font-weight: bold;
-      color: #667eea;
-    }
-    
-    .countdown.expired {
-      color: #28a745;
-    }
-    
-    .last-update {
-      font-size: 12px;
-      color: #999;
-      text-align: center;
-      margin-top: 10px;
-    }
-    
-    .buttons-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-      margin-top: 30px;
-    }
-    
-    button {
-      padding: 15px;
-      font-size: 16px;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      font-size: 24px;
+      margin-bottom: 15px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
     
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    .status-label {
+      font-size: 0.875rem;
+      color: #666;
+      margin-bottom: 8px;
+      font-weight: 500;
     }
     
-    button:active {
-      transform: translateY(0);
-    }
-    
-    .loading {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border: 2px solid #667eea;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .materie-status {
-      font-size: 14px;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-    
-    .materie-status.available {
-      background-color: #d4edda;
-      color: #155724;
-    }
-    
-    .materie-status.waiting {
-      background-color: #fff3cd;
-      color: #856404;
-    }
-    
-    .refresh-btn {
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      background-color: #667eea;
-      color: white;
-      margin-left: 10px;
-    }
-    
-    .refresh-btn:hover {
-      background-color: #5568d3;
-      transform: scale(1.05);
-    }
-    
-    .refresh-btn:active {
-      transform: scale(0.95);
-    }
-    
-    .refresh-btn.loading {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    
-    .newsletter-section {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e7f1ff 100%);
-      border-radius: 12px;
-      padding: 25px;
-      margin-top: 30px;
-      border: 2px solid #667eea;
-    }
-    
-    .newsletter-section h3 {
-      margin: 0 0 15px 0;
+    .status-value {
+      font-size: 1.125rem;
+      font-weight: 700;
       color: #333;
-      font-size: 18px;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    
+    .badge.success {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+    }
+    
+    .badge.warning {
+      background: linear-gradient(135deg, #ffc107, #ff9800);
+      color: white;
+    }
+    
+    .badge.pending {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+    
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .btn {
+      padding: 20px;
+      font-size: 1.125rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+      position: relative;
+      overflow: hidden;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
+    }
+    
+    .btn:active {
+      transform: translateY(-1px);
+    }
+    
+    .btn-icon {
+      font-size: 1.5rem;
+    }
+    
+    .newsletter {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e7f1ff 100%);
+      border-radius: 20px;
+      padding: 35px;
+      border: 2px solid #667eea;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .newsletter::before {
+      content: '✉️';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      font-size: 120px;
+      opacity: 0.05;
+    }
+    
+    .newsletter h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .newsletter p {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
     }
     
     .newsletter-form {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 15px;
       flex-wrap: wrap;
     }
     
     .newsletter-form input {
       flex: 1;
-      min-width: 200px;
-      padding: 12px 15px;
+      min-width: 250px;
+      padding: 16px 20px;
       border: 2px solid #ddd;
-      border-radius: 8px;
-      font-size: 14px;
+      border-radius: 12px;
+      font-size: 1rem;
       transition: all 0.3s ease;
+      background: white;
     }
     
     .newsletter-form input:focus {
       outline: none;
       border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
     }
     
     .newsletter-btn {
-      padding: 12px 24px !important;
-      font-size: 14px !important;
-      margin-left: 0 !important;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
     }
     
-    .newsletter-status {
-      font-size: 13px;
-      color: #666;
-      margin-top: 10px;
+    .newsletter-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
     }
     
-    .newsletter-status.success {
+    .message {
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-top: 15px;
+      font-size: 0.95rem;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    .message.success {
+      background: #d4edda;
       color: #155724;
-      background-color: #d4edda;
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 10px;
+      border: 1px solid #c3e6cb;
     }
     
-    .newsletter-status.error {
+    .message.error {
+      background: #f8d7da;
       color: #721c24;
-      background-color: #f8d7da;
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 10px;
+      border: 1px solid #f5c6cb;
     }
     
-    .newsletter-info {
-      font-size: 12px;
-      color: #666;
-      margin-top: 10px;
-      font-style: italic;
+    .refresh-btn {
+      padding: 10px 20px;
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+      border: 2px solid #667eea;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.875rem;
+    }
+    
+    .refresh-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: rotate(180deg);
+    }
+    
+    .refresh-btn.loading {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      color: black;
+      font-size: 0.875rem;
+    }
+    
+    footer a {
+      color: black;
+      text-decoration: none;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+    
+    footer a:hover {
+      border-bottom-color: white;
+    }
+    
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      .glass-card { padding: 25px; }
+      .countdown-number { font-size: 2rem; }
+      .newsletter-form { flex-direction: column; }
+      .newsletter-form input { min-width: 100%; }
+    }
+    
+    .pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
   </style>
 </head>
 <body>
+  <!-- Animated particles -->
+  <div class="particles" id="particles"></div>
+  
   <div class="container">
-    <h1>🎓 Monitor Materie Esame 2026</h1>
-    
-    <div class="status-section">
-      <div class="status-row">
-        <span class="status-label">📅 Data prevista uscite materie:</span>
-        <span class="status-value">
-          <strong>29 Gennaio 2026</strong>
-        </span>
+    <div class="glass-card">
+      <h1>🎓 Monitor Materie Esame 2026</h1>
+      
+      <div class="hero-countdown">
+        <h2>⏱️ Tempo rimanente all'uscita prevista</h2>
+        <div class="countdown-display" id="countdown"></div>
       </div>
       
-      <div class="status-row">
-        <span class="status-label">⏱️ Countdown:</span>
-        <span class="status-value">
-          <span id="countdown" class="countdown">Caricamento...</span>
-        </span>
+      <div class="status-grid">
+        <div class="status-card">
+          <div class="status-icon">📅</div>
+          <div class="status-label">Data prevista</div>
+          <div class="status-value">29 Gennaio 2026</div>
+        </div>
+        
+        <div class="status-card">
+          <div class="status-icon" id="statusIcon">🔄</div>
+          <div class="status-label">Stato server</div>
+          <div class="status-value" id="statusText">Verifica in corso...</div>
+          <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">🔄</button>
+        </div>
+        
+        <div class="status-card">
+          <div class="status-icon">📚</div>
+          <div class="status-label">Materie d'esame</div>
+          <div class="status-value">
+            <span id="materieStatus">Verifica in corso...</span>
+            <div id="materieBadge"></div>
+          </div>
+        </div>
       </div>
       
-      <div class="status-row">
-        <span class="status-label">📚 Materie:</span>
-        <span class="status-value">
-          <span id="materie-status" class="materie-status waiting">
-            <span class="loading"></span> In attesa...
-          </span>
-        </span>
+      <div class="action-buttons">
+        <button class="btn" onclick="vai('licei')">
+          <span class="btn-icon">🎓</span>
+          <span>Licei</span>
+        </button>
+        <button class="btn" onclick="vai('istitutiTecnici')">
+          <span class="btn-icon">⚙️</span>
+          <span>Istituti Tecnici</span>
+        </button>
+        <button class="btn" onclick="vai('istitutiProfessionali')">
+          <span class="btn-icon">🏢</span>
+          <span>Istituti Professionali</span>
+        </button>
       </div>
       
-      <div class="status-row">
-        <span class="status-label">🔄 Stato:</span>
-        <span class="status-value">
-          <span id="status-icon" class="status-icon pending">🔄</span>
-          <span id="status-text">Aggiornamento...</span>
-          <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()" title="Aggiorna subito">🔄 Aggiorna</button>
-        </span>
-      </div>
-      
-      <div class="last-update" id="last-update"></div>
-    </div>
-    
-    <div class="buttons-section">
-      <button onclick="vai('licei')">🎓 LICEI</button>
-      <button onclick="vai('istitutiTecnici')">⚙️ ISTITUTI TECNICI</button>
-      <button onclick="vai('istitutiProfessionali')">🏢 ISTITUTI PROFESSIONALI</button>
-    </div>
-    
-    <div class="newsletter-section">
-      <h3>📧 Vuoi essere aggiornato?</h3>
-      <div class="newsletter-form">
-        <input 
-          type="email" 
-          id="emailInput" 
-          placeholder="Inserisci la tua email..."
-          autocomplete="email"
-        >
-        <button class="newsletter-btn" onclick="subscribeNewsletter()">Iscriviti</button>
-      </div>
-      <div id="newsletter-status"></div>
-      <div class="newsletter-info">
-        ✉️ Riceverai una notifica quando le materie d'esame verranno pubblicate. (Controlla la cartella spam in caso se non vedi l'email!)
-      </div>
-    </div>
-
-    <footer>
-        <p style="text-align: center; font-size: 12px; color: #999; margin-top: 30px;">
-            © 2026 Monitor Materie Esame - Creato con ❤️ da <a href="https://github.com/FilippoPietroNeri" target="_blank">Filippo Pietro Neri</a>
+      <div class="newsletter">
+        <h3><span>📧</span> Resta aggiornato</h3>
+        <p>Ricevi una notifica via email quando le materie d'esame verranno pubblicate</p>
+        <div class="newsletter-form">
+          <input 
+            type="email" 
+            id="emailInput" 
+            placeholder="la-tua-email@esempio.com"
+            autocomplete="email"
+          >
+          <button class="newsletter-btn" onclick="subscribeNewsletter()">Iscriviti ora</button>
+        </div>
+        <div id="newsletterStatus"></div>
+        <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.8;">
+          💡 Suggerimento: controlla la cartella spam se non ricevi l'email
         </p>
-    </footer>
+      </div>
+      
+      <footer>
+        <p>© 2026 Monitor Materie Esame • Creato con ❤️ da <a href="https://github.com/FilippoPietroNeri" target="_blank">Filippo Pietro Neri</a></p>
+        <p style="margin-top: 10px; opacity: 0.8;">Ultimo aggiornamento: <span id="lastUpdate">---</span></p>
+      </footer>
+    </div>
   </div>
 
   <script>
     const TARGET_DATE = new Date('2026-01-29T00:00:00').getTime();
-    const REFRESH_INTERVAL = 10000; // 10 secondi
-    
-    let lastStatus = null;
+    const REFRESH_INTERVAL = 10000;
     let lastAnno = null;
+    
+    // Create animated particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+        container.appendChild(particle);
+      }
+    }
     
     function vai(percorso) {
       location.href = `/indirizzi.html?percorso=${percorso}`;
@@ -346,21 +542,36 @@
     function updateCountdown() {
       const now = new Date().getTime();
       const distance = TARGET_DATE - now;
-      
       const countdownEl = document.getElementById('countdown');
       
       if (distance <= 0) {
-        countdownEl.textContent = '✅ Data stimata raggiunta';
-        countdownEl.classList.add('expired');
-      } else {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        
-        countdownEl.textContent = `${days}g ${hours}h ${minutes}m ${seconds}s`;
-        countdownEl.classList.remove('expired');
+        countdownEl.innerHTML = '<div style="grid-column: 1/-1; font-size: 1.5rem;">✅ Data stimata raggiunta!</div>';
+        return;
       }
+      
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      countdownEl.innerHTML = `
+        <div class="countdown-unit">
+          <span class="countdown-number">${days}</span>
+          <span class="countdown-label">Giorni</span>
+        </div>
+        <div class="countdown-unit">
+          <span class="countdown-number">${hours}</span>
+          <span class="countdown-label">Ore</span>
+        </div>
+        <div class="countdown-unit">
+          <span class="countdown-number">${minutes}</span>
+          <span class="countdown-label">Minuti</span>
+        </div>
+        <div class="countdown-unit">
+          <span class="countdown-number">${seconds}</span>
+          <span class="countdown-label">Secondi</span>
+        </div>
+      `;
     }
     
     async function checkStatus() {
@@ -368,123 +579,88 @@
         const response = await fetch('/api?action=status');
         const data = await response.json();
         
-        const statusIcon = document.getElementById('status-icon');
-        const statusText = document.getElementById('status-text');
-        const materieStatus = document.getElementById('materie-status');
+        const statusIcon = document.getElementById('statusIcon');
+        const statusText = document.getElementById('statusText');
+        const materieStatus = document.getElementById('materieStatus');
+        const materieBadge = document.getElementById('materieBadge');
         
         if (data.anno) {
-          statusIcon.className = 'status-icon active';
-          statusIcon.textContent = '✓';
-          statusText.textContent = `Server online - Anno: ${data.anno}`;
-          statusIcon.style.backgroundColor = '#28a745';
+          statusIcon.textContent = '✅';
+          statusText.textContent = `Online (Anno: ${data.anno})`;
           
-          // Controlla se l'anno è cambiato
           if (lastAnno !== null && lastAnno !== data.anno) {
-            materieStatus.innerHTML = '✅ Materie disponibili!';
-            materieStatus.className = 'materie-status available';
-          } else if (lastAnno === null && data.anno) {
-            // Primo caricamento - non cambiare lo stato
-            materieStatus.innerHTML = '⏳ In attesa dell\'uscita delle materie...';
-            materieStatus.className = 'materie-status waiting';
+            materieStatus.textContent = 'Disponibili!';
+            materieBadge.innerHTML = '<span class="badge success">✅ Pubblicate</span>';
+          } else {
+            materieStatus.textContent = 'In attesa...';
+            materieBadge.innerHTML = '<span class="badge warning pulse">⏳ Non ancora disponibili</span>';
           }
-          
           lastAnno = data.anno;
         } else {
-          statusIcon.className = 'status-icon pending';
-          statusIcon.textContent = '!';
-          statusText.textContent = 'Server online - Anno non disponibile';
-          statusIcon.style.backgroundColor = '#ffc107';
-          
-          materieStatus.innerHTML = '⏳ In attesa dell\'uscita delle materie...';
-          materieStatus.className = 'materie-status waiting';
+          statusIcon.textContent = '⚠️';
+          statusText.textContent = 'Online (Dati non disponibili)';
+          materieStatus.textContent = 'In attesa...';
+          materieBadge.innerHTML = '<span class="badge warning pulse">⏳ Non ancora disponibili</span>';
         }
         
-        const now = new Date();
-        document.getElementById('last-update').textContent = 
-          `Ultimo aggiornamento: ${now.toLocaleTimeString('it-IT')}`;
-        
+        document.getElementById('lastUpdate').textContent = 
+          new Date().toLocaleTimeString('it-IT');
       } catch (err) {
-        const statusIcon = document.getElementById('status-icon');
-        const statusText = document.getElementById('status-text');
-        statusIcon.className = 'status-icon inactive';
-        statusIcon.textContent = '✕';
-        statusText.textContent = 'Errore connessione';
-        statusIcon.style.backgroundColor = '#6c757d';
+        document.getElementById('statusIcon').textContent = '❌';
+        document.getElementById('statusText').textContent = 'Errore connessione';
         console.error('Errore status:', err);
       }
     }
     
     function manualRefresh() {
-      const refreshBtn = document.getElementById('refreshBtn');
-      refreshBtn.classList.add('loading');
-      refreshBtn.disabled = true;
-      
+      const btn = document.getElementById('refreshBtn');
+      btn.classList.add('loading');
       checkStatus().then(() => {
-        setTimeout(() => {
-          refreshBtn.classList.remove('loading');
-          refreshBtn.disabled = false;
-        }, 500);
+        setTimeout(() => btn.classList.remove('loading'), 500);
       });
     }
     
     function subscribeNewsletter() {
       const emailInput = document.getElementById('emailInput');
       const email = emailInput.value.trim();
-      const statusDiv = document.getElementById('newsletter-status');
+      const statusDiv = document.getElementById('newsletterStatus');
       
-      // Validazione email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        statusDiv.className = 'newsletter-status error';
+        statusDiv.className = 'message error';
         statusDiv.textContent = '❌ Inserisci un\'email valida';
         return;
       }
       
-      // Invia l'iscrizione al backend
       fetch(`/api?action=subscribe&email=${encodeURIComponent(email)}`)
         .then(r => r.json())
         .then(data => {
           if (data.success) {
-            statusDiv.className = 'newsletter-status success';
-            statusDiv.textContent = `✅ ${data.message}! ${data.totalSubscribers} iscritti in totale`;
+            statusDiv.className = 'message success';
+            statusDiv.textContent = `✅ ${data.message}! (${data.totalSubscribers} iscritti totali)`;
             emailInput.value = '';
-            
-            // Nascondi il messaggio dopo 5 secondi
-            setTimeout(() => {
-              statusDiv.textContent = '';
-              statusDiv.className = '';
-            }, 5000);
+            setTimeout(() => statusDiv.remove(), 5000);
           } else {
-            statusDiv.className = 'newsletter-status error';
+            statusDiv.className = 'message error';
             statusDiv.textContent = `❌ ${data.error || 'Errore iscrizione'}`;
           }
         })
         .catch(err => {
-          statusDiv.className = 'newsletter-status error';
+          statusDiv.className = 'message error';
           statusDiv.textContent = '❌ Errore di connessione';
-          console.error('Errore subscribe:', err);
         });
     }
     
-    // Permetti di iscriversi premendo Enter
-    document.addEventListener('DOMContentLoaded', function() {
-      const emailInput = document.getElementById('emailInput');
-      emailInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          subscribeNewsletter();
-        }
-      });
+    document.getElementById('emailInput').addEventListener('keypress', e => {
+      if (e.key === 'Enter') subscribeNewsletter();
     });
     
-    // Aggiorna il countdown ogni secondo
-    setInterval(updateCountdown, 1000);
-    
-    // Verifica lo status ogni 30 secondi
-    setInterval(checkStatus, REFRESH_INTERVAL);
-    
-    // Update iniziale
+    // Initialize
+    createParticles();
     updateCountdown();
     checkStatus();
+    setInterval(updateCountdown, 1000);
+    setInterval(checkStatus, REFRESH_INTERVAL);
   </script>
 </body>
 </html>

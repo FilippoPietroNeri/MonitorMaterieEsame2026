@@ -3,163 +3,526 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Materie d'esame</title>
+  <title>Materie d'Esame - Dettaglio</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f5f5;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
     
-    .container {
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateX(-5px);
+    }
+    
+    .main-container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      animation: slideDown 0.5s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .content-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 400px 1fr;
       gap: 20px;
-      margin-top: 20px;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     
     @media (max-width: 1200px) {
-      .container {
+      .content-grid {
         grid-template-columns: 1fr;
       }
     }
     
-    .section {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      padding: 20px;
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    h2 {
-      color: #333;
-      margin-top: 0;
-      border-bottom: 2px solid #007bff;
-      padding-bottom: 10px;
+    .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 25px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     
-    #materie-list {
+    .card-body {
+      padding: 25px;
+    }
+    
+    .subjects-list {
       list-style: none;
       padding: 0;
       margin: 0;
     }
     
-    #materie-list li {
-      padding: 12px;
-      margin: 8px 0;
-      background-color: #f8f9fa;
-      border-left: 4px solid #007bff;
-      border-radius: 4px;
-      transition: all 0.3s ease;
+    .subject-item {
+      padding: 16px 20px;
+      margin: 10px 0;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-left: 4px solid #667eea;
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: default;
+      position: relative;
+      overflow: hidden;
     }
     
-    #materie-list li:hover {
-      background-color: #e7f1ff;
-      transform: translateX(4px);
+    .subject-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, #667eea, #764ba2);
+      transition: width 0.3s ease;
+    }
+    
+    .subject-item:hover::before {
+      width: 100%;
+      opacity: 0.1;
+    }
+    
+    .subject-item:hover {
+      transform: translateX(8px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+      background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+    }
+    
+    .subject-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      margin-right: 12px;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .subject-name {
+      font-weight: 600;
+      color: #333;
+      font-size: 1rem;
     }
     
     .loading {
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      gap: 15px;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
       color: #666;
-      font-style: italic;
+      font-weight: 500;
     }
     
     .error {
-      padding: 12px;
-      background-color: #f8d7da;
+      padding: 20px;
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
       color: #721c24;
-      border: 1px solid #f5c6cb;
-      border-radius: 4px;
-      margin: 10px 0;
+      border: 2px solid #f5c6cb;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+    }
+    
+    .error-icon {
+      font-size: 1.5rem;
+    }
+    
+    .pdf-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+    
+    .btn-secondary:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .pdf-viewer-container {
+      position: relative;
+      width: 100%;
+      height: 700px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     
     #pdf-viewer {
       width: 100%;
-      height: 600px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      height: 100%;
+      border: none;
     }
     
-    .pdf-controls {
+    .pdf-loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    
+    .empty-state-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333;
       margin-bottom: 10px;
     }
     
-    .pdf-controls a {
-      display: inline-block;
-      padding: 8px 12px;
-      background-color: #007bff;
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: background-color 0.3s;
+    .empty-state-text {
+      font-size: 1rem;
+      color: #666;
     }
     
-    .pdf-controls a:hover {
-      background-color: #0056b3;
+    .stats-bar {
+      display: flex;
+      gap: 20px;
+      padding: 15px 0;
+      border-top: 1px solid #e9ecef;
+      margin-top: 15px;
+    }
+    
+    .stat {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: #666;
+      margin-top: 5px;
     }
   </style>
 </head>
 <body>
-  <h1>Materie d'esame</h1>
-  
-  <div class="container">
-    <div class="section">
-      <h2>📚 Materie</h2>
-      <div id="materie-container">
-        <div class="loading">Caricamento materie...</div>
+  <div class="main-container">
+    <a href="/" class="back-button">
+      ← Torna alla home
+    </a>
+    
+    <div class="header">
+      <h1>📚 Materie d'Esame</h1>
+      <div class="subtitle">
+        <span>🔍 Codice indirizzo:</span>
+        <strong id="codice-display">---</strong>
       </div>
     </div>
     
-    <div class="section">
-      <h2>📄 PDF</h2>
-      <div class="pdf-controls">
-        <a id="pdf-link" href="#" target="_blank" download>Scarica PDF</a>
+    <div class="content-grid">
+      <!-- Subjects Section -->
+      <div class="card">
+        <div class="card-header">
+          📋 Elenco Materie
+        </div>
+        <div class="card-body" id="subjects-container">
+          <div class="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Caricamento materie in corso...</div>
+          </div>
+        </div>
       </div>
-      <iframe id="pdf-viewer"></iframe>
+      
+      <!-- PDF Section -->
+      <div class="card">
+        <div class="card-header">
+          📄 Documento Ufficiale
+        </div>
+        <div class="card-body">
+          <div class="pdf-controls">
+            <a id="pdf-download" href="#" class="btn btn-primary" target="_blank" download>
+              📥 Scarica PDF
+            </a>
+            <a id="pdf-open" href="#" class="btn btn-secondary" target="_blank">
+              🔗 Apri in nuova scheda
+            </a>
+          </div>
+          <div class="pdf-viewer-container">
+            <div class="pdf-loading" id="pdf-loading">
+              <div class="loading">
+                <div class="spinner"></div>
+                <div class="loading-text">Caricamento PDF...</div>
+              </div>
+            </div>
+            <iframe id="pdf-viewer"></iframe>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     const codice = new URLSearchParams(location.search).get('codice');
     
+    // Display code
+    document.getElementById('codice-display').textContent = codice || 'Non specificato';
+    
     if (!codice) {
-      document.getElementById('materie-container').innerHTML = 
-        '<div class="error">Codice indirizzo mancante</div>';
+      showError('subjects-container', 'Codice indirizzo mancante. Impossibile caricare le materie.');
     } else {
-      // Carica le materie
-      fetch(`/api?action=materie&codice=${codice}`)
-        .then(r => {
-          if (!r.ok) throw new Error(`Errore ${r.status}`);
-          return r.json();
-        })
-        .then(data => {
+      loadSubjects(codice);
+      loadPDF(codice);
+    }
+    
+    function showError(containerId, message) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = `
+        <div class="error">
+          <span class="error-icon">⚠️</span>
+          <span>${message}</span>
+        </div>
+      `;
+    }
+    
+    function showEmptyState(containerId, icon, title, text) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">${icon}</div>
+          <div class="empty-state-title">${title}</div>
+          <div class="empty-state-text">${text}</div>
+        </div>
+      `;
+    }
+    
+    async function loadSubjects(codice) {
+      try {
+        const response = await fetch(`/api?action=materie&codice=${codice}`);
+        
+        if (!response.ok) {
+          throw new Error(`Errore server: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const container = document.getElementById('subjects-container');
+        
+        if (data.materie && data.materie.length > 0) {
           const list = document.createElement('ul');
-          list.id = 'materie-list';
+          list.className = 'subjects-list';
           
-          if (data.materie && data.materie.length > 0) {
-            data.materie.forEach(materia => {
-              const li = document.createElement('li');
-              li.textContent = materia;
-              list.appendChild(li);
-            });
-          } else {
-            list.innerHTML = '<li class="error">Nessuna materia trovata</li>';
-          }
+          data.materie.forEach((materia, index) => {
+            const li = document.createElement('li');
+            li.className = 'subject-item';
+            li.style.animationDelay = `${index * 0.05}s`;
+            li.innerHTML = `
+              <span class="subject-number">${index + 1}</span>
+              <span class="subject-name">${materia}</span>
+            `;
+            list.appendChild(li);
+          });
           
-          document.getElementById('materie-container').innerHTML = '';
-          document.getElementById('materie-container').appendChild(list);
-        })
-        .catch(err => {
-          document.getElementById('materie-container').innerHTML = 
-            `<div class="error">Errore: ${err.message}</div>`;
-        });
-      
-      // Configura il PDF
+          // Add stats
+          const stats = document.createElement('div');
+          stats.className = 'stats-bar';
+          stats.innerHTML = `
+            <div class="stat">
+              <div class="stat-value">${data.materie.length}</div>
+              <div class="stat-label">Materie totali</div>
+            </div>
+          `;
+          
+          container.innerHTML = '';
+          container.appendChild(list);
+          container.appendChild(stats);
+          
+          // Animate items
+          document.querySelectorAll('.subject-item').forEach((item, i) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            setTimeout(() => {
+              item.style.transition = 'all 0.5s ease-out';
+              item.style.opacity = '1';
+              item.style.transform = 'translateX(0)';
+            }, i * 50);
+          });
+        } else {
+          showEmptyState('subjects-container', '📭', 'Nessuna materia trovata', 'Non sono state trovate materie per questo indirizzo.');
+        }
+      } catch (err) {
+        showError('subjects-container', `Errore nel caricamento: ${err.message}`);
+        console.error('Errore caricamento materie:', err);
+      }
+    }
+    
+    function loadPDF(codice) {
       const pdfUrl = `https://visualizzamaterieesame.static.istruzione.it/pdf/${codice}.pdf`;
-      document.getElementById('pdf-link').href = pdfUrl;
-      document.getElementById('pdf-viewer').src = `https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
+      const pdfViewer = document.getElementById('pdf-viewer');
+      const pdfLoading = document.getElementById('pdf-loading');
+      
+      // Set download links
+      document.getElementById('pdf-download').href = pdfUrl;
+      document.getElementById('pdf-open').href = pdfUrl;
+      
+      // Load PDF in viewer
+      pdfViewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
+      
+      // Hide loading after a delay (Google Viewer doesn't have a load event)
+      setTimeout(() => {
+        pdfLoading.style.opacity = '0';
+        setTimeout(() => {
+          pdfLoading.style.display = 'none';
+        }, 300);
+      }, 2000);
     }
   </script>
 </body>

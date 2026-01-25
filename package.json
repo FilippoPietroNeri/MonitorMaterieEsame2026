@@ -3,7 +3,7 @@
     "test": "vitest",
     "build": "npx tsc --project tsconfig.json",
     "start": "npm run build && node ./dist/main.js",
-    "dev": "npx ts-node src/main.ts"
+    "dev": "npx nodemon src/main.ts"
   },
   "dependencies": {
     "@vercel/node": "^5.5.27",
