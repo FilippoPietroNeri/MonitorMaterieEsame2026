@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitor Materie Esame 2026</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      padding: 30px;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333;
+      margin: 0 0 30px 0;
+    }
+    
+    .status-section {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .status-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .status-label {
+      font-weight: 600;
+      color: #555;
+    }
+    
+    .status-value {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .status-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    
+    .status-icon.active {
+      background-color: #28a745;
+    }
+    
+    .status-icon.pending {
+      background-color: #ffc107;
+    }
+    
+    .status-icon.inactive {
+      background-color: #6c757d;
+    }
+    
+    .countdown {
+      font-size: 18px;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .countdown.expired {
+      color: #28a745;
+    }
+    
+    .last-update {
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+      margin-top: 10px;
+    }
+    
+    .buttons-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    button {
+      padding: 15px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #667eea;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .materie-status {
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    
+    .materie-status.available {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .materie-status.waiting {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .refresh-btn {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: #667eea;
+      color: white;
+      margin-left: 10px;
+    }
+    
+    .refresh-btn:hover {
+      background-color: #5568d3;
+      transform: scale(1.05);
+    }
+    
+    .refresh-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .refresh-btn.loading {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .newsletter-section {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e7f1ff 100%);
+      border-radius: 12px;
+      padding: 25px;
+      margin-top: 30px;
+      border: 2px solid #667eea;
+    }
+    
+    .newsletter-section h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .newsletter-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .newsletter-form input {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .newsletter-form input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .newsletter-btn {
+      padding: 12px 24px !important;
+      font-size: 14px !important;
+      margin-left: 0 !important;
+    }
+    
+    .newsletter-status {
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
+    }
+    
+    .newsletter-status.success {
+      color: #155724;
+      background-color: #d4edda;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    
+    .newsletter-status.error {
+      color: #721c24;
+      background-color: #f8d7da;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    
+    .newsletter-info {
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎓 Monitor Materie Esame 2026</h1>
+    
+    <div class="status-section">
+      <div class="status-row">
+        <span class="status-label">📅 Data prevista uscite materie:</span>
+        <span class="status-value">
+          <strong>29 Gennaio 2026</strong>
+        </span>
+      </div>
+      
+      <div class="status-row">
+        <span class="status-label">⏱️ Countdown:</span>
+        <span class="status-value">
+          <span id="countdown" class="countdown">Caricamento...</span>
+        </span>
+      </div>
+      
+      <div class="status-row">
+        <span class="status-label">📚 Materie:</span>
+        <span class="status-value">
+          <span id="materie-status" class="materie-status waiting">
+            <span class="loading"></span> In attesa...
+          </span>
+        </span>
+      </div>
+      
+      <div class="status-row">
+        <span class="status-label">🔄 Stato:</span>
+        <span class="status-value">
+          <span id="status-icon" class="status-icon pending">🔄</span>
+          <span id="status-text">Aggiornamento...</span>
+          <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()" title="Aggiorna subito">🔄 Aggiorna</button>
+        </span>
+      </div>
+      
+      <div class="last-update" id="last-update"></div>
+    </div>
+    
+    <div class="buttons-section">
+      <button onclick="vai('licei')">🎓 LICEI</button>
+      <button onclick="vai('istitutiTecnici')">⚙️ ISTITUTI TECNICI</button>
+      <button onclick="vai('istitutiProfessionali')">🏢 ISTITUTI PROFESSIONALI</button>
+    </div>
+    
+    <div class="newsletter-section">
+      <h3>📧 Vuoi essere aggiornato?</h3>
+      <div class="newsletter-form">
+        <input 
+          type="email" 
+          id="emailInput" 
+          placeholder="Inserisci la tua email..."
+          autocomplete="email"
+        >
+        <button class="newsletter-btn" onclick="subscribeNewsletter()">Iscriviti</button>
+      </div>
+      <div id="newsletter-status"></div>
+      <div class="newsletter-info">
+        ✉️ Riceverai una notifica quando le materie d'esame verranno pubblicate. (Controlla la cartella spam in caso se non vedi l'email!)
+      </div>
+    </div>
+
+    <footer>
+        <p style="text-align: center; font-size: 12px; color: #999; margin-top: 30px;">
+            © 2026 Monitor Materie Esame - Creato con ❤️ da <a href="https://github.com/FilippoPietroNeri" target="_blank">Filippo Pietro Neri</a>
+        </p>
+    </footer>
+  </div>
+
+  <script>
+    const TARGET_DATE = new Date('2026-01-29T00:00:00').getTime();
+    const REFRESH_INTERVAL = 10000; // 10 secondi
+    
+    let lastStatus = null;
+    let lastAnno = null;
+    
+    function vai(percorso) {
+      location.href = `/indirizzi.html?percorso=${percorso}`;
+    }
+    
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = TARGET_DATE - now;
+      
+      const countdownEl = document.getElementById('countdown');
+      
+      if (distance <= 0) {
+        countdownEl.textContent = '✅ Data stimata raggiunta';
+        countdownEl.classList.add('expired');
+      } else {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        countdownEl.textContent = `${days}g ${hours}h ${minutes}m ${seconds}s`;
+        countdownEl.classList.remove('expired');
+      }
+    }
+    
+    async function checkStatus() {
+      try {
+        const response = await fetch('/api?action=status');
+        const data = await response.json();
+        
+        const statusIcon = document.getElementById('status-icon');
+        const statusText = document.getElementById('status-text');
+        const materieStatus = document.getElementById('materie-status');
+        
+        if (data.anno) {
+          statusIcon.className = 'status-icon active';
+          statusIcon.textContent = '✓';
+          statusText.textContent = `Server online - Anno: ${data.anno}`;
+          statusIcon.style.backgroundColor = '#28a745';
+          
+          // Controlla se l'anno è cambiato
+          if (lastAnno !== null && lastAnno !== data.anno) {
+            materieStatus.innerHTML = '✅ Materie disponibili!';
+            materieStatus.className = 'materie-status available';
+          } else if (lastAnno === null && data.anno) {
+            // Primo caricamento - non cambiare lo stato
+            materieStatus.innerHTML = '⏳ In attesa dell\'uscita delle materie...';
+            materieStatus.className = 'materie-status waiting';
+          }
+          
+          lastAnno = data.anno;
+        } else {
+          statusIcon.className = 'status-icon pending';
+          statusIcon.textContent = '!';
+          statusText.textContent = 'Server online - Anno non disponibile';
+          statusIcon.style.backgroundColor = '#ffc107';
+          
+          materieStatus.innerHTML = '⏳ In attesa dell\'uscita delle materie...';
+          materieStatus.className = 'materie-status waiting';
+        }
+        
+        const now = new Date();
+        document.getElementById('last-update').textContent = 
+          `Ultimo aggiornamento: ${now.toLocaleTimeString('it-IT')}`;
+        
+      } catch (err) {
+        const statusIcon = document.getElementById('status-icon');
+        const statusText = document.getElementById('status-text');
+        statusIcon.className = 'status-icon inactive';
+        statusIcon.textContent = '✕';
+        statusText.textContent = 'Errore connessione';
+        statusIcon.style.backgroundColor = '#6c757d';
+        console.error('Errore status:', err);
+      }
+    }
+    
+    function manualRefresh() {
+      const refreshBtn = document.getElementById('refreshBtn');
+      refreshBtn.classList.add('loading');
+      refreshBtn.disabled = true;
+      
+      checkStatus().then(() => {
+        setTimeout(() => {
+          refreshBtn.classList.remove('loading');
+          refreshBtn.disabled = false;
+        }, 500);
+      });
+    }
+    
+    function subscribeNewsletter() {
+      const emailInput = document.getElementById('emailInput');
+      const email = emailInput.value.trim();
+      const statusDiv = document.getElementById('newsletter-status');
+      
+      // Validazione email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        statusDiv.className = 'newsletter-status error';
+        statusDiv.textContent = '❌ Inserisci un\'email valida';
+        return;
+      }
+      
+      // Invia l'iscrizione al backend
+      fetch(`/api?action=subscribe&email=${encodeURIComponent(email)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            statusDiv.className = 'newsletter-status success';
+            statusDiv.textContent = `✅ ${data.message}! ${data.totalSubscribers} iscritti in totale`;
+            emailInput.value = '';
+            
+            // Nascondi il messaggio dopo 5 secondi
+            setTimeout(() => {
+              statusDiv.textContent = '';
+              statusDiv.className = '';
+            }, 5000);
+          } else {
+            statusDiv.className = 'newsletter-status error';
+            statusDiv.textContent = `❌ ${data.error || 'Errore iscrizione'}`;
+          }
+        })
+        .catch(err => {
+          statusDiv.className = 'newsletter-status error';
+          statusDiv.textContent = '❌ Errore di connessione';
+          console.error('Errore subscribe:', err);
+        });
+    }
+    
+    // Permetti di iscriversi premendo Enter
+    document.addEventListener('DOMContentLoaded', function() {
+      const emailInput = document.getElementById('emailInput');
+      emailInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          subscribeNewsletter();
+        }
+      });
+    });
+    
+    // Aggiorna il countdown ogni secondo
+    setInterval(updateCountdown, 1000);
+    
+    // Verifica lo status ogni 30 secondi
+    setInterval(checkStatus, REFRESH_INTERVAL);
+    
+    // Update iniziale
+    updateCountdown();
+    checkStatus();
+  </script>
+</body>
+</html>

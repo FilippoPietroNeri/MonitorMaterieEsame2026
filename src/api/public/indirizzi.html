@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indirizzi</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      padding: 30px;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333;
+      margin: 0 0 10px 0;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+    
+    .search-section {
+      margin-bottom: 30px;
+    }
+    
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+    
+    #searchInput {
+      width: 100%;
+      padding: 12px 40px 12px 15px;
+      font-size: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+    
+    #searchInput:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      font-size: 18px;
+    }
+    
+    .stats {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #555;
+    }
+    
+    .stat strong {
+      color: #667eea;
+      font-size: 18px;
+    }
+    
+    .list-sections {
+      display: grid;
+      gap: 25px;
+    }
+    
+    .list-section {
+      display: none;
+    }
+    
+    .list-section.active {
+      display: block;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #667eea;
+    }
+    
+    .indirizzi-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .indirizzo-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 15px;
+      align-items: center;
+      padding: 15px;
+      margin-bottom: 10px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border-left: 4px solid #667eea;
+    }
+    
+    .indirizzo-item:hover {
+      background: #e7f1ff;
+      transform: translateX(4px);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    }
+    
+    .indirizzo-item.favorited {
+      border-left-color: #ffc107;
+      background: #fffbf0;
+    }
+    
+    .indirizzo-item.favorited:hover {
+      background: #fffef5;
+    }
+    
+    .indirizzo-link {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+    
+    .indirizzo-link:hover {
+      color: #667eea;
+    }
+    
+    .indirizzo-code {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #999;
+      font-weight: 600;
+    }
+    
+    .materie-count {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      background-color: #667eea;
+      color: white;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .materie-count.loading {
+      background-color: #ccc;
+    }
+    
+    .favorite-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .favorite-btn:hover {
+      transform: scale(1.2);
+    }
+    
+    .favorite-btn.favorited {
+      color: #ffc107;
+    }
+    
+    .favorite-btn:not(.favorited) {
+      color: #ccc;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Seleziona Indirizzo</h1>
+    <div class="subtitle" id="percorsoTitle"></div>
+    
+    <div class="search-section">
+      <div class="search-box">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="🔍 Cerca indirizzo..."
+        >
+        <div class="search-icon">🔍</div>
+      </div>
+    </div>
+    
+    <div class="stats">
+      <div class="stat">
+        <span>📚 Totale:</span>
+        <strong id="totalCount">0</strong>
+      </div>
+      <div class="stat">
+        <span>⭐ Preferiti:</span>
+        <strong id="favoritesCount">0</strong>
+      </div>
+      <div class="stat">
+        <span>📊 Visualizzati:</span>
+        <strong id="visibleCount">0</strong>
+      </div>
+    </div>
+    
+    <div class="list-sections">
+      <div class="list-section active">
+        <div class="section-title">⭐ Preferiti</div>
+        <ul class="indirizzi-list" id="favoritesList"></ul>
+      </div>
+      
+      <div class="list-section active">
+        <div class="section-title">📋 Tutti gli indirizzi</div>
+        <ul class="indirizzi-list" id="list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const percorso = new URLSearchParams(location.search).get('percorso');
+    const FAVORITES_KEY = `favorites_${percorso}`;
+    
+    const percorsoLabels = {
+      'licei': '🎓 LICEI',
+      'istitutiTecnici': '⚙️ ISTITUTI TECNICI',
+      'istitutiProfessionali': '🏢 ISTITUTI PROFESSIONALI'
+    };
+    
+    let allIndirizzi = [];
+    let favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+    
+    // Aggiorna il titolo del percorso
+    document.getElementById('percorsoTitle').textContent = percorsoLabels[percorso] || percorso;
+    
+    function loadFavorites() {
+      favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+      updateStats();
+    }
+    
+    function toggleFavorite(codice) {
+      const index = favorites.indexOf(codice);
+      if (index > -1) {
+        favorites.splice(index, 1);
+      } else {
+        favorites.push(codice);
+      }
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+      renderAll();
+    }
+    
+    function isFavorite(codice) {
+      return favorites.includes(codice);
+    }
+    
+    function updateStats() {
+      document.getElementById('totalCount').textContent = allIndirizzi.length;
+      document.getElementById('favoritesCount').textContent = favorites.length;
+      
+      const visibleItems = document.querySelectorAll('.indirizzo-item:not([style*="display: none"])').length;
+      document.getElementById('visibleCount').textContent = visibleItems;
+    }
+    
+    function createIndirizzItem(indirizzo) {
+      const li = document.createElement('li');
+      li.className = 'indirizzo-item';
+      if (isFavorite(indirizzo.codice)) {
+        li.classList.add('favorited');
+      }
+      
+      const favorited = isFavorite(indirizzo.codice);
+      
+      li.innerHTML = `
+        <div>
+          <a href="/materie.html?codice=${indirizzo.codice}" class="indirizzo-link">
+            <strong>${indirizzo.nome}</strong>
+            <div class="indirizzo-code">${indirizzo.codice}</div>
+          </a>
+        </div>
+        <div class="materie-count loading" data-codice="${indirizzo.codice}">
+          ⏳ Caricamento...
+        </div>
+        <button 
+          class="favorite-btn ${favorited ? 'favorited' : ''}" 
+          onclick="toggleFavorite('${indirizzo.codice}')"
+          title="${favorited ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}"
+        >
+          ${favorited ? '⭐' : '☆'}
+        </button>
+      `;
+      
+      // Carica il conteggio materie
+      loadMaterieCount(indirizzo.codice, li);
+      
+      return li;
+    }
+    
+    function loadMaterieCount(codice, listItem) {
+      fetch(`/api?action=materie&codice=${codice}`)
+        .then(r => r.json())
+        .then(data => {
+          const countEl = listItem.querySelector(`[data-codice="${codice}"]`);
+          if (data.materie) {
+            countEl.textContent = `📚 ${data.materie.length} materie`;
+            countEl.classList.remove('loading');
+          }
+        })
+        .catch(err => {
+          const countEl = listItem.querySelector(`[data-codice="${codice}"]`);
+          countEl.textContent = '❌ Errore';
+          countEl.classList.remove('loading');
+        });
+    }
+    
+    function renderAll() {
+      const favoritesList = document.getElementById('favoritesList');
+      const mainList = document.getElementById('list');
+      
+      favoritesList.innerHTML = '';
+      mainList.innerHTML = '';
+      
+      const favoriteIndirizzi = allIndirizzi.filter(i => isFavorite(i.codice));
+      const nonFavoriteIndirizzi = allIndirizzi.filter(i => !isFavorite(i.codice));
+      
+      if (favoriteIndirizzi.length === 0) {
+        favoritesList.innerHTML = '<li class="empty-state"><div class="empty-state-icon">☆</div><p>Nessun preferito ancora</p></li>';
+      } else {
+        favoriteIndirizzi.forEach(i => {
+          favoritesList.appendChild(createIndirizzItem(i));
+        });
+      }
+      
+      if (nonFavoriteIndirizzi.length === 0) {
+        mainList.innerHTML = '<li class="no-results">Nessun risultato trovato</li>';
+      } else {
+        nonFavoriteIndirizzi.forEach(i => {
+          mainList.appendChild(createIndirizzItem(i));
+        });
+      }
+      
+      updateStats();
+    }
+    
+    function filterIndirizzi(searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
+      const favoritesList = document.getElementById('favoritesList');
+      const mainList = document.getElementById('list');
+      
+      // Filtra preferiti
+      const favoriteItems = favoritesList.querySelectorAll('.indirizzo-item');
+      let visibleFavorites = 0;
+      favoriteItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        const matches = text.includes(lowerSearch);
+        item.style.display = matches ? '' : 'none';
+        if (matches) visibleFavorites++;
+      });
+      
+      if (visibleFavorites === 0 && favoritesList.querySelector('.indirizzo-item')) {
+        if (!favoritesList.querySelector('.no-results')) {
+          const noResults = document.createElement('li');
+          noResults.className = 'no-results';
+          noResults.textContent = 'Nessun preferito corrisponde';
+          favoritesList.appendChild(noResults);
+        }
+      } else {
+        const noResults = favoritesList.querySelector('.no-results');
+        if (noResults) noResults.remove();
+      }
+      
+      // Filtra lista principale
+      const mainItems = mainList.querySelectorAll('.indirizzo-item');
+      let visibleMain = 0;
+      mainItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        const matches = text.includes(lowerSearch);
+        item.style.display = matches ? '' : 'none';
+        if (matches) visibleMain++;
+      });
+      
+      if (visibleMain === 0 && mainList.querySelector('.indirizzo-item')) {
+        if (!mainList.querySelector('.no-results')) {
+          const noResults = document.createElement('li');
+          noResults.className = 'no-results';
+          noResults.textContent = 'Nessun risultato trovato';
+          mainList.appendChild(noResults);
+        }
+      } else {
+        const noResults = mainList.querySelector('.no-results');
+        if (noResults) noResults.remove();
+      }
+      
+      updateStats();
+    }
+    
+    // Event listener per la ricerca
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      filterIndirizzi(e.target.value);
+    });
+    
+    // Carica gli indirizzi
+    fetch(`/api?action=indirizzi&percorso=${percorso}`)
+      .then(r => r.json())
+      .then(data => {
+        allIndirizzi = data;
+        renderAll();
+      });
+  </script>
+</body>
+</html>
