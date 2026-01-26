@@ -53,6 +53,12 @@ L’applicazione sarà disponibile su `http://localhost:3000`.
 
 ## Configurazione NGINX e SSL
 
+### Variabili di ambiente monitor
+- `MONITOR_INTERVAL_MS` (opzionale): intervallo di polling in millisecondi per controllare il sito ministeriale. Default: `120000` (2 minuti).
+- `MONITOR_TIMEOUT_MS` (opzionale): timeout in millisecondi per la richiesta HTTP al sito. Default: `10000`.
+- `DISCORD_WEBHOOK_URLS` (opzionale): uno o più webhook Discord separati da virgola, punto e virgola o newline che riceveranno la notifica quando l'anno passa da 2024/25 a 2025/26 (o a un nuovo anno scolastico). In alternativa si può usare `DISCORD_WEBHOOK_URL` per un singolo webhook.
+- SMTP: continuano a servire `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` per l'invio email agli iscritti.
+
 ### 1. Installa NGINX e Certbot
 
 ```bash

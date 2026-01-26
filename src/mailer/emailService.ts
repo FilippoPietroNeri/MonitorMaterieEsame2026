@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
+import { logger } from '../utils/logger';
 
 require('dotenv').config();
 
-// Configurazione IONOS SMTP
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.ionos.it',
+  host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT || '465'),
   secure: true,
   auth: {
@@ -24,7 +24,7 @@ function getSubscribers(): string[] {
       return JSON.parse(data);
     }
   } catch (err) {
-    console.error('Errore lettura iscritti:', err);
+    logger.error('Errore lettura iscritti:', err);
   }
   return [];
 }
@@ -33,7 +33,7 @@ function saveSubscribers(subscribers: string[]) {
   try {
     fs.writeFileSync(SUBSCRIBERS_FILE, JSON.stringify([...new Set(subscribers)], null, 2));
   } catch (err) {
-    console.error('Errore salvataggio iscritti:', err);
+    logger.error('Errore salvataggio iscritti:', err);
   }
 }
 
@@ -58,10 +58,10 @@ export function getSubscribersList(): string[] {
 export async function sendNotification(anno: string): Promise<void> {
   const subscribers = getSubscribers();
 
-  console.log(subscribers);
+  logger.log(subscribers);
   
   if (subscribers.length === 0) {
-    console.log('Nessun iscritto');
+    logger.log('Nessun iscritto');
     return;
   }
 
@@ -89,7 +89,7 @@ export async function sendNotification(anno: string): Promise<void> {
             <p>Ciao,</p>
             <p>Le materie d'esame per l'anno scolastico <strong>${anno}</strong> sono finalmente state pubblicate! 🎉</p>
             <p>Accedi al nostro monitor per visualizzare i dettagli:</p>
-            <a href="https://aevorastudios.com" class="button">Visualizza Materie</a>
+            <a href="https://maturita.aevorastudios.com" class="button">Visualizza Materie</a>
           </div>
           
           <div class="footer">
@@ -121,8 +121,8 @@ Monitor Materie Esame ${anno}
       html: htmlContent
     });
 
-    console.log(`Email inviate a ${subscribers.length} iscritti. MessageID: ${result.messageId}`);
+    logger.log(`Email inviate a ${subscribers.length} iscritti. MessageID: ${result.messageId}`);
   } catch (err) {
-    console.error('Errore invio email:', err);
+    logger.error('Errore invio email:', err);
   }
 }

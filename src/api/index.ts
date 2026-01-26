@@ -1,34 +1,17 @@
 import axios from 'axios';
 import { parsePdf } from '../parser/parsePdf';
-import { addSubscriber, getSubscribersList, sendNotification } from '../mailer/emailService';
+import { addSubscriber, getSubscribersList } from '../mailer/emailService';
 import { BASE_URL, PERCORSI } from '../config/config';
-
-let lastAnnoNotified: string | null = null;
+import { checkAnno, getLastSeenAnno } from '../monitor/annoMonitor';
+import { logger } from '../utils/logger';
 
 export default async function handler(req: any, res: any) {
     const action = req.query.action;
     try {
         if (action === 'status') {
-            const { data: html } = await axios.get(BASE_URL);
-            const match = html.match(/a\.s\.\s*(\d{4}\/\d{2})/);
-            const anno = match?.[1] ?? null;
-
-            if (!anno) {
-                return res.json({ anno: null });
-            }
-
-            if (lastAnnoNotified === null) {
-                lastAnnoNotified = anno;
-                return res.json({ anno: null });
-            }
-
-            if (anno !== lastAnnoNotified && getSubscribersList().length > 0) {
-                console.log(`📧 Anno scolastico cambiato da "${lastAnnoNotified}" a "${anno}" - Invio newsletter...`);
-                await sendNotification(anno);
-                lastAnnoNotified = anno;
-            }
-
-            return res.json({ anno });
+            const result = await checkAnno({ notify: false });
+            const currentAnno = result.anno ?? getLastSeenAnno();
+            return res.json({ anno: currentAnno ?? null });
         }
 
         if (action === 'percorsi') {
@@ -77,7 +60,7 @@ export default async function handler(req: any, res: any) {
 
         return res.status(404).json({ error: 'azione non valida' });
     } catch (err: any) {
-        console.error(err);
+        logger.error(err);
         return res.status(500).json({ error: 'errore server' });
     }
 }
