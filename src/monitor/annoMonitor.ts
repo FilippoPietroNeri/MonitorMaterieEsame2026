@@ -186,10 +186,10 @@ export function startAnnoMonitor() {
   if (monitorTimer) return;
 
   monitorTimer = setInterval(() => {
-    void checkAnno({ notify: true });
+    void checkAnno({ notify: false });
   }, POLL_INTERVAL_MS);
 
-  void checkAnno({ notify: true });
+  void checkAnno({ notify: false });
 }
 
 export function getLastSeenAnno() {
