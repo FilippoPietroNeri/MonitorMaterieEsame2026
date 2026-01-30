@@ -37,7 +37,7 @@ const webhookEnv = process.env.DISCORD_WEBHOOK_URLS || process.env.DISCORD_WEBHO
 const webhookUrls = parseWebhookUrls(webhookEnv);
 
 let lastSeenAnno: string | null = LAST_SEEN_ANNO;
-let lastNotifiedAnno: string | null = null;
+let lastNotifiedAnno: string | null = LAST_SEEN_ANNO;
 let monitorTimer: NodeJS.Timeout | null = null;
 let running = false;
 
@@ -138,7 +138,7 @@ export async function checkAnno(options: { notify: boolean } = { notify: false }
   running = true;
 
   try {
-    const response = await axios.get(BASE_URL, { timeout: REQUEST_TIMEOUT_MS });
+    const response = await axios.get(BASE_URL);
     const siteUp = response.status >= 200 && response.status < 400;
 
     if (!siteUp) {
@@ -148,6 +148,8 @@ export async function checkAnno(options: { notify: boolean } = { notify: false }
 
     const anno = extractAnno(String(response.data));
     const previousAnno = lastSeenAnno;
+
+    console.log(anno, previousAnno)
 
     if (!anno) {
       logger.warn('Anno scolastico non trovato nella pagina.');
@@ -161,7 +163,9 @@ export async function checkAnno(options: { notify: boolean } = { notify: false }
     }
 
     const changed = previousAnno !== null && anno !== previousAnno;
-    const shouldNotify = options.notify && changed && anno !== lastNotifiedAnno;
+    console.log(changed)
+    const shouldNotify = options.notify && changed && lastNotifiedAnno !== anno;
+    console.log(shouldNotify)
 
     if (shouldNotify) {
       logger.log(`Anno cambiato da ${previousAnno} a ${anno}. Invio notifiche...`);

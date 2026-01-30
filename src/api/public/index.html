@@ -520,7 +520,7 @@
   <script>
     const TARGET_DATE = new Date('2026-01-28T12:00:00').getTime();
     const REFRESH_INTERVAL = 10000;
-    let lastAnno = null;
+    let lastAnno = "2024/25";
     
     // Create animated particles
     function createParticles() {
@@ -587,7 +587,7 @@
         if (data.anno) {
           statusIcon.textContent = '✅';
           statusText.textContent = `Online (Anno: ${data.anno})`;
-          
+          console.log(lastAnno)
           if (lastAnno !== null && lastAnno !== data.anno) {
             materieStatus.textContent = 'Disponibili!';
             materieBadge.innerHTML = '<span class="badge success">✅ Pubblicate</span>';
@@ -595,7 +595,6 @@
             materieStatus.textContent = 'In attesa...';
             materieBadge.innerHTML = '<span class="badge warning pulse">⏳ Non ancora disponibili</span>';
           }
-          lastAnno = data.anno;
         } else {
           statusIcon.textContent = '⚠️';
           statusText.textContent = 'Online (Dati non disponibili)';
